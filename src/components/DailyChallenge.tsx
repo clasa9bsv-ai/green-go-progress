@@ -2,8 +2,18 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Circle, Sparkles } from "lucide-react";
+import { CheckCircle2, Circle, Camera, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Challenge {
   id: string;
@@ -12,6 +22,8 @@ interface Challenge {
   category: string;
   points: number;
   icon: string;
+  verificationQuestion?: string;
+  verificationAnswer?: string;
 }
 
 const todayChallenge: Challenge = {
@@ -20,17 +32,49 @@ const todayChallenge: Challenge = {
   description: "Astăzi evită sticlele de plastic de unică folosință. Folosește propria ta sticlă reutilizabilă și contribuie la reducerea deșeurilor din plastic!",
   category: "Reciclare",
   points: 20,
-  icon: "♻️"
+  icon: "♻️",
+  verificationQuestion: "Ce tip de sticlă ai folosit astăzi?",
+  verificationAnswer: "reutilizabil" // keyword pentru verificare simplă
 };
 
 export const DailyChallenge = () => {
   const [completed, setCompleted] = useState(false);
+  const [showVerification, setShowVerification] = useState(false);
+  const [verificationAnswer, setVerificationAnswer] = useState("");
+  const [uploadedImage, setUploadedImage] = useState<File | null>(null);
 
-  const handleComplete = () => {
-    setCompleted(true);
-    toast.success("Provocare completată!", {
-      description: `+${todayChallenge.points} puncte câștigate! 🎉`,
-    });
+  const handleStartVerification = () => {
+    setShowVerification(true);
+  };
+
+  const handleVerify = () => {
+    // Verificare simplă - poate fi înlocuită cu AI verification mai târziu
+    const hasValidAnswer = verificationAnswer.toLowerCase().includes(
+      todayChallenge.verificationAnswer?.toLowerCase() || ""
+    );
+    const hasImage = uploadedImage !== null;
+
+    if (hasValidAnswer || hasImage) {
+      setCompleted(true);
+      setShowVerification(false);
+      toast.success("Provocare completată și verificată!", {
+        description: `+${todayChallenge.points} puncte câștigate! 🎉`,
+      });
+      setVerificationAnswer("");
+      setUploadedImage(null);
+    } else {
+      toast.error("Verificare eșuată", {
+        description: "Te rugăm să încarci o fotografie sau să răspunzi corect la întrebare.",
+      });
+    }
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploadedImage(file);
+      toast.success("Fotografie încărcată!");
+    }
   };
 
   return (
@@ -56,7 +100,7 @@ export const DailyChallenge = () => {
           {todayChallenge.description}
         </p>
         <Button
-          onClick={handleComplete}
+          onClick={handleStartVerification}
           disabled={completed}
           className={`w-full ${
             completed 
@@ -68,16 +112,86 @@ export const DailyChallenge = () => {
           {completed ? (
             <>
               <CheckCircle2 className="mr-2 h-5 w-5" />
-              Completat!
+              Completat și Verificat!
             </>
           ) : (
             <>
               <Circle className="mr-2 h-5 w-5" />
-              Marchează ca Finalizat
+              Verifică și Finalizează
             </>
           )}
         </Button>
       </CardContent>
+
+      <Dialog open={showVerification} onOpenChange={setShowVerification}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Verifică Provocarea</DialogTitle>
+            <DialogDescription>
+              Pentru a finaliza provocarea, te rugăm să încarci o fotografie sau să răspunzi la întrebarea de verificare.
+            </DialogDescription>
+          </DialogHeader>
+
+          <Tabs defaultValue="photo" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="photo">
+                <Camera className="mr-2 h-4 w-4" />
+                Fotografie
+              </TabsTrigger>
+              <TabsTrigger value="question">
+                <MessageSquare className="mr-2 h-4 w-4" />
+                Întrebare
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="photo" className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="photo">Încarcă o fotografie ca probă</Label>
+                <Input
+                  id="photo"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="cursor-pointer"
+                />
+                {uploadedImage && (
+                  <p className="text-sm text-success">
+                    ✓ {uploadedImage.name}
+                  </p>
+                )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="question" className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="answer">{todayChallenge.verificationQuestion}</Label>
+                <Input
+                  id="answer"
+                  placeholder="Răspunsul tău..."
+                  value={verificationAnswer}
+                  onChange={(e) => setVerificationAnswer(e.target.value)}
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
+
+          <div className="flex gap-2 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setShowVerification(false)}
+              className="flex-1"
+            >
+              Anulează
+            </Button>
+            <Button
+              onClick={handleVerify}
+              className="flex-1 bg-gradient-primary hover:opacity-90"
+            >
+              Verifică
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };
