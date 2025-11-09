@@ -14,7 +14,153 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      challenges: {
+        Row: {
+          category: string
+          created_at: string | null
+          date: string
+          description: string
+          icon: string
+          id: string
+          points: number
+          title: string
+          verification_answer: string | null
+          verification_question: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          date?: string
+          description: string
+          icon: string
+          id?: string
+          points: number
+          title: string
+          verification_answer?: string | null
+          verification_question?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          date?: string
+          description?: string
+          icon?: string
+          id?: string
+          points?: number
+          title?: string
+          verification_answer?: string | null
+          verification_question?: string | null
+        }
+        Relationships: []
+      }
+      completions: {
+        Row: {
+          challenge_id: string
+          completed_at: string | null
+          id: string
+          user_id: string
+          verification_data: Json | null
+          verification_method: string
+          verified: boolean | null
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string | null
+          id?: string
+          user_id: string
+          verification_data?: Json | null
+          verification_method: string
+          verified?: boolean | null
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string | null
+          id?: string
+          user_id?: string
+          verification_data?: Json | null
+          verification_method?: string
+          verified?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "completions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "completions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          completed_challenges: number | null
+          created_at: string | null
+          current_level: number | null
+          id: string
+          total_points: number | null
+          updated_at: string | null
+          username: string | null
+        }
+        Insert: {
+          completed_challenges?: number | null
+          created_at?: string | null
+          current_level?: number | null
+          id: string
+          total_points?: number | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Update: {
+          completed_challenges?: number | null
+          created_at?: string | null
+          current_level?: number | null
+          id?: string
+          total_points?: number | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
+      rewards: {
+        Row: {
+          company: string
+          created_at: string | null
+          description: string
+          icon: string
+          id: string
+          level: number
+          title: string
+          value: string
+        }
+        Insert: {
+          company: string
+          created_at?: string | null
+          description: string
+          icon: string
+          id?: string
+          level: number
+          title: string
+          value: string
+        }
+        Update: {
+          company?: string
+          created_at?: string | null
+          description?: string
+          icon?: string
+          id?: string
+          level?: number
+          title?: string
+          value?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

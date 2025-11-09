@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, Circle, Camera, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
   DialogContent,
@@ -26,46 +27,192 @@ interface Challenge {
   verificationAnswer?: string;
 }
 
-const todayChallenge: Challenge = {
-  id: "1",
-  title: "Folosește o sticlă reutilizabilă",
-  description: "Astăzi evită sticlele de plastic de unică folosință. Folosește propria ta sticlă reutilizabilă și contribuie la reducerea deșeurilor din plastic!",
-  category: "Reciclare",
-  points: 20,
-  icon: "♻️",
-  verificationQuestion: "Ce tip de sticlă ai folosit astăzi?",
-  verificationAnswer: "reutilizabil" // keyword pentru verificare simplă
-};
 
 export const DailyChallenge = () => {
+  const [todayChallenge, setTodayChallenge] = useState<Challenge | null>(null);
   const [completed, setCompleted] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
   const [verificationAnswer, setVerificationAnswer] = useState("");
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+
+  useEffect(() => {
+    fetchTodayChallenge();
+    checkIfCompleted();
+  }, []);
+
+  const fetchTodayChallenge = async () => {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const { data, error } = await supabase
+        .from('challenges')
+        .select('*')
+        .eq('date', today)
+        .single();
+
+      if (error) throw error;
+      setTodayChallenge(data);
+    } catch (error) {
+      console.error('Error fetching challenge:', error);
+      toast.error("Eroare la încărcarea provocării zilei");
+    }
+  };
+
+  const checkIfCompleted = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || !todayChallenge) return;
+
+      const { data } = await supabase
+        .from('completions')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('challenge_id', todayChallenge.id)
+        .single();
+
+      if (data) {
+        setCompleted(true);
+      }
+    } catch (error) {
+      console.error('Error checking completion:', error);
+    }
+  };
 
   const handleStartVerification = () => {
     setShowVerification(true);
   };
 
-  const handleVerify = () => {
-    // Verificare simplă - poate fi înlocuită cu AI verification mai târziu
-    const hasValidAnswer = verificationAnswer.toLowerCase().includes(
-      todayChallenge.verificationAnswer?.toLowerCase() || ""
-    );
-    const hasImage = uploadedImage !== null;
+  const handleVerify = async () => {
+    if (!todayChallenge) return;
+    
+    setVerifying(true);
 
-    if (hasValidAnswer || hasImage) {
-      setCompleted(true);
-      setShowVerification(false);
-      toast.success("Provocare completată și verificată!", {
-        description: `+${todayChallenge.points} puncte câștigate! 🎉`,
-      });
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Trebuie să fii autentificat");
+        return;
+      }
+
+      let verified = false;
+      let verificationMethod = '';
+      let verificationData: any = {};
+
+      // Verificare cu fotografie folosind AI
+      if (uploadedImage) {
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          const base64Image = reader.result as string;
+          
+          try {
+            const { data: verificationResult, error: funcError } = await supabase.functions.invoke('verify-challenge', {
+              body: {
+                imageBase64: base64Image,
+                challengeTitle: todayChallenge.title,
+                challengeDescription: todayChallenge.description
+              }
+            });
+
+            if (funcError) throw funcError;
+
+            verified = verificationResult.verified;
+            verificationMethod = 'photo';
+            verificationData = { aiResponse: verificationResult.message };
+
+            await completeChallenge(user.id, verified, verificationMethod, verificationData);
+          } catch (error: any) {
+            console.error('AI verification error:', error);
+            toast.error("Eroare la verificarea fotografiei");
+            setVerifying(false);
+          }
+        };
+        reader.readAsDataURL(uploadedImage);
+      } 
+      // Verificare cu întrebare
+      else if (verificationAnswer) {
+        const hasValidAnswer = verificationAnswer.toLowerCase().includes(
+          todayChallenge.verificationAnswer?.toLowerCase() || ""
+        );
+        verified = hasValidAnswer;
+        verificationMethod = 'question';
+        verificationData = { answer: verificationAnswer };
+
+        await completeChallenge(user.id, verified, verificationMethod, verificationData);
+      } else {
+        toast.error("Te rugăm să încarci o fotografie sau să răspunzi la întrebare");
+        setVerifying(false);
+      }
+    } catch (error) {
+      console.error('Verification error:', error);
+      toast.error("Eroare la verificare");
+      setVerifying(false);
+    }
+  };
+
+  const completeChallenge = async (
+    userId: string,
+    verified: boolean,
+    verificationMethod: string,
+    verificationData: any
+  ) => {
+    if (!todayChallenge) return;
+
+    try {
+      // Salvează completarea
+      const { error: completionError } = await supabase
+        .from('completions')
+        .insert({
+          user_id: userId,
+          challenge_id: todayChallenge.id,
+          verification_method: verificationMethod,
+          verified,
+          verification_data: verificationData
+        });
+
+      if (completionError) throw completionError;
+
+      if (verified) {
+        // Actualizează profilul utilizatorului
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('total_points, completed_challenges')
+          .eq('id', userId)
+          .single();
+
+        if (profile) {
+          const newPoints = profile.total_points + todayChallenge.points;
+          const newCompletedChallenges = profile.completed_challenges + 1;
+          const newLevel = Math.floor(newPoints / 100) + 1;
+
+          await supabase
+            .from('profiles')
+            .update({
+              total_points: newPoints,
+              completed_challenges: newCompletedChallenges,
+              current_level: newLevel
+            })
+            .eq('id', userId);
+
+          setCompleted(true);
+          setShowVerification(false);
+          toast.success("Provocare completată și verificată!", {
+            description: `+${todayChallenge.points} puncte câștigate! 🎉`,
+          });
+        }
+      } else {
+        toast.error("Verificare eșuată", {
+          description: "Fotografia nu corespunde provocării. Încearcă din nou!",
+        });
+      }
+
       setVerificationAnswer("");
       setUploadedImage(null);
-    } else {
-      toast.error("Verificare eșuată", {
-        description: "Te rugăm să încarci o fotografie sau să răspunzi corect la întrebare.",
-      });
+    } catch (error) {
+      console.error('Error completing challenge:', error);
+      toast.error("Eroare la salvarea provocării");
+    } finally {
+      setVerifying(false);
     }
   };
 
@@ -76,6 +223,16 @@ export const DailyChallenge = () => {
       toast.success("Fotografie încărcată!");
     }
   };
+
+  if (!todayChallenge) {
+    return (
+      <Card className="shadow-medium border-primary/20">
+        <CardContent className="py-8 text-center text-muted-foreground">
+          Se încarcă provocarea zilei...
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="shadow-medium hover:shadow-strong transition-all duration-300 border-primary/20">
@@ -186,8 +343,9 @@ export const DailyChallenge = () => {
             <Button
               onClick={handleVerify}
               className="flex-1 bg-gradient-primary hover:opacity-90"
+              disabled={verifying}
             >
-              Verifică
+              {verifying ? "Se verifică..." : "Verifică"}
             </Button>
           </div>
         </DialogContent>
