@@ -88,8 +88,11 @@ const Rewards = () => {
           <h1 className="text-4xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent">
             Premii & Recompense
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground mb-2">
             Nivelul tău curent: <Badge className="ml-2 bg-gradient-accent">{currentLevel}</Badge>
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Premiile sunt disponibile la fiecare 10 nivele (10, 20, 30, etc.)
           </p>
         </div>
 
