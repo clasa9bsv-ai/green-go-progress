@@ -23,8 +23,6 @@ interface Challenge {
   category: string;
   points: number;
   icon: string;
-  verificationQuestion?: string;
-  verificationAnswer?: string;
 }
 
 
@@ -36,6 +34,8 @@ export const DailyChallenge = () => {
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
+  const [hasVerificationQuestion, setHasVerificationQuestion] = useState(false);
+  const [verificationQuestion, setVerificationQuestion] = useState("");
 
   useEffect(() => {
     fetchTodayChallenge();
@@ -53,6 +53,12 @@ export const DailyChallenge = () => {
 
       if (error) throw error;
       setTodayChallenge(data);
+
+      // Note: Verification questions/answers are stored securely server-side
+      // The edge function will handle all verification logic
+      // For now, we always show both tabs and let users choose
+      setHasVerificationQuestion(true);
+      setVerificationQuestion("Răspunde la întrebarea de verificare pentru această provocare");
     } catch (error) {
       console.error('Error fetching challenge:', error);
       toast.error("Eroare la încărcarea provocării zilei");
@@ -129,16 +135,30 @@ export const DailyChallenge = () => {
         };
         reader.readAsDataURL(uploadedImage);
       } 
-      // Verificare cu întrebare
+      // Verificare cu întrebare (server-side)
       else if (verificationAnswer) {
-        const hasValidAnswer = verificationAnswer.toLowerCase().includes(
-          todayChallenge.verificationAnswer?.toLowerCase() || ""
-        );
-        verified = hasValidAnswer;
-        verificationMethod = 'question';
-        verificationData = { answer: verificationAnswer };
+        try {
+          const { data: verificationResult, error: funcError } = await supabase.functions.invoke('verify-challenge', {
+            body: {
+              textAnswer: verificationAnswer,
+              challengeId: todayChallenge.id,
+              challengeTitle: todayChallenge.title,
+              challengeDescription: todayChallenge.description
+            }
+          });
 
-        await completeChallenge(user.id, verified, verificationMethod, verificationData);
+          if (funcError) throw funcError;
+
+          verified = verificationResult.verified;
+          verificationMethod = 'question';
+          verificationData = { answer: verificationAnswer };
+
+          await completeChallenge(user.id, verified, verificationMethod, verificationData);
+        } catch (error: any) {
+          console.error('Text verification error:', error);
+          toast.error("Eroare la verificarea răspunsului");
+          setVerifying(false);
+        }
       } else {
         toast.error("Te rugăm să încarci o fotografie sau să răspunzi la întrebare");
         setVerifying(false);
@@ -320,15 +340,21 @@ export const DailyChallenge = () => {
             </TabsContent>
 
             <TabsContent value="question" className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="answer">{todayChallenge.verificationQuestion}</Label>
-                <Input
-                  id="answer"
-                  placeholder="Răspunsul tău..."
-                  value={verificationAnswer}
-                  onChange={(e) => setVerificationAnswer(e.target.value)}
-                />
-              </div>
+              {hasVerificationQuestion ? (
+                <div className="space-y-2">
+                  <Label htmlFor="answer">{verificationQuestion}</Label>
+                  <Input
+                    id="answer"
+                    placeholder="Răspunsul tău..."
+                    value={verificationAnswer}
+                    onChange={(e) => setVerificationAnswer(e.target.value)}
+                  />
+                </div>
+              ) : (
+                <p className="text-muted-foreground text-center py-4">
+                  Această provocare nu are întrebare de verificare. Te rugăm să folosești opțiunea de fotografie.
+                </p>
+              )}
             </TabsContent>
           </Tabs>
 

@@ -12,11 +12,47 @@ serve(async (req) => {
   }
 
   try {
-    const { imageBase64, challengeTitle, challengeDescription } = await req.json();
+    const { imageBase64, challengeTitle, challengeDescription, textAnswer, challengeId } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
+    const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY not configured');
+    }
+    
+    if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+      throw new Error('Supabase credentials not configured');
+    }
+
+    const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+    // If text answer provided, verify against protected table
+    if (textAnswer && challengeId) {
+      console.log('Verifying text answer for challenge:', challengeId);
+      
+      const { data: verification, error } = await supabaseAdmin
+        .from('challenge_verification')
+        .select('verification_answer')
+        .eq('challenge_id', challengeId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching verification data:', error);
+        throw new Error('Verification data not found');
+      }
+
+      const correctAnswer = verification.verification_answer?.toLowerCase() || '';
+      const userAnswer = textAnswer.toLowerCase();
+      const verified = userAnswer.includes(correctAnswer);
+
+      console.log('Text verification result:', verified);
+
+      return new Response(
+        JSON.stringify({ verified, message: verified ? 'Răspuns corect!' : 'Răspuns incorect' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     console.log('Verifying challenge with AI:', challengeTitle);

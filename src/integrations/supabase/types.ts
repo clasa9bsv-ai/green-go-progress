@@ -14,6 +14,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      challenge_verification: {
+        Row: {
+          challenge_id: string
+          created_at: string | null
+          id: string
+          verification_answer: string | null
+          verification_question: string | null
+        }
+        Insert: {
+          challenge_id: string
+          created_at?: string | null
+          id?: string
+          verification_answer?: string | null
+          verification_question?: string | null
+        }
+        Update: {
+          challenge_id?: string
+          created_at?: string | null
+          id?: string
+          verification_answer?: string | null
+          verification_question?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_verification_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       challenges: {
         Row: {
           category: string
@@ -24,8 +56,6 @@ export type Database = {
           id: string
           points: number
           title: string
-          verification_answer: string | null
-          verification_question: string | null
         }
         Insert: {
           category: string
@@ -36,8 +66,6 @@ export type Database = {
           id?: string
           points: number
           title: string
-          verification_answer?: string | null
-          verification_question?: string | null
         }
         Update: {
           category?: string
@@ -48,8 +76,6 @@ export type Database = {
           id?: string
           points?: number
           title?: string
-          verification_answer?: string | null
-          verification_question?: string | null
         }
         Relationships: []
       }
