@@ -6,6 +6,7 @@ import { DailyChallenge } from "@/components/DailyChallenge";
 import { StatsDisplay } from "@/components/StatsDisplay";
 import { CategoryCards } from "@/components/CategoryCards";
 import { BadgeGallery } from "@/components/BadgeGallery";
+import { AdsSidebar } from "@/components/AdsSidebar";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -47,12 +48,27 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5">
-      <div className="container mx-auto px-4 py-8 space-y-12">
-        <Hero user={user} />
-        <DailyChallenge />
-        <StatsDisplay />
-        <CategoryCards />
-        <BadgeGallery />
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Left Sidebar - visible only on large screens */}
+          <aside className="hidden lg:block lg:col-span-3">
+            <AdsSidebar position="left" />
+          </aside>
+
+          {/* Main Content */}
+          <main className="lg:col-span-6 space-y-12">
+            <Hero user={user} />
+            <DailyChallenge />
+            <StatsDisplay />
+            <CategoryCards />
+            <BadgeGallery />
+          </main>
+
+          {/* Right Sidebar - visible only on large screens */}
+          <aside className="hidden lg:block lg:col-span-3">
+            <AdsSidebar position="right" />
+          </aside>
+        </div>
       </div>
     </div>
   );
