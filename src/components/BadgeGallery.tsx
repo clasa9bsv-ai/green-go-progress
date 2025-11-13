@@ -60,23 +60,26 @@ export const BadgeGallery = () => {
       <h2 className="text-3xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent">
         Insignele Tale
       </h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {badges.map((badge) => (
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        {badges.map((badge, index) => (
           <Card 
             key={badge.id}
-            className={`shadow-soft transition-all text-center ${
+            className={`shadow-medium transition-all text-center border-2 animate-in fade-in slide-in-from-bottom-4 ${
               badge.earned 
-                ? 'hover:shadow-medium cursor-pointer hover:scale-105' 
-                : 'opacity-50 grayscale'
+                ? 'hover:shadow-strong cursor-pointer hover:scale-110 hover:-rotate-2 hover:border-primary/50 duration-300' 
+                : 'opacity-60 grayscale hover:opacity-70'
             }`}
+            style={{ animationDelay: `${index * 80}ms`, animationFillMode: 'backwards' }}
           >
             <CardContent className="pt-6 pb-4">
-              <div className="text-5xl mb-3">{badge.emoji}</div>
-              <h3 className="font-semibold text-sm mb-1">{badge.name}</h3>
-              <p className="text-xs text-muted-foreground">{badge.description}</p>
+              <div className={`text-6xl mb-4 transition-transform duration-300 ${badge.earned ? 'group-hover:scale-125 group-hover:animate-float' : ''}`}>
+                {badge.emoji}
+              </div>
+              <h3 className="font-bold text-base mb-2">{badge.name}</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">{badge.description}</p>
               {badge.earned && (
-                <Badge className="mt-2 bg-success" variant="secondary">
-                  Câștigat
+                <Badge className="mt-3 bg-gradient-primary text-primary-foreground shadow-md hover:shadow-glow transition-all" variant="secondary">
+                  ✓ Câștigat
                 </Badge>
               )}
             </CardContent>

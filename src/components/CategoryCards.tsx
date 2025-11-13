@@ -57,18 +57,19 @@ export const CategoryCards = () => {
       <h2 className="text-3xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent">
         Categorii de Impact
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {categories.map((category) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {categories.map((category, index) => (
           <Card 
             key={category.id} 
-            className="shadow-soft hover:shadow-medium transition-all cursor-pointer group hover:scale-105 duration-300"
+            className="shadow-medium hover:shadow-strong transition-all cursor-pointer group hover:scale-105 duration-300 border-2 hover:border-primary/30 animate-in fade-in slide-in-from-bottom-4"
+            style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'backwards' }}
           >
             <CardHeader>
-              <div className={`w-12 h-12 rounded-lg ${category.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
+              <div className={`w-14 h-14 rounded-xl ${category.color} flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-md`}>
                 {category.icon}
               </div>
-              <CardTitle className="text-lg">{category.name}</CardTitle>
-              <CardDescription>{category.description}</CardDescription>
+              <CardTitle className="text-xl group-hover:text-primary transition-colors">{category.name}</CardTitle>
+              <CardDescription className="text-base">{category.description}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
@@ -79,13 +80,15 @@ export const CategoryCards = () => {
                   {category.completedChallenges}/{category.totalChallenges}
                 </Badge>
               </div>
-              <div className="w-full bg-secondary h-2 rounded-full mt-2 overflow-hidden">
+              <div className="w-full bg-secondary h-3 rounded-full mt-3 overflow-hidden shadow-inner">
                 <div 
-                  className="h-full bg-gradient-primary transition-all duration-500"
+                  className="h-full bg-gradient-primary transition-all duration-700 group-hover:shadow-glow relative overflow-hidden"
                   style={{ 
                     width: `${(category.completedChallenges / category.totalChallenges) * 100}%` 
                   }}
-                />
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
+                </div>
               </div>
             </CardContent>
           </Card>
