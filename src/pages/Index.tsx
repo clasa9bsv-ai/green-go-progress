@@ -7,6 +7,7 @@ import { StatsDisplay } from "@/components/StatsDisplay";
 import { CategoryCards } from "@/components/CategoryCards";
 import { BadgeGallery } from "@/components/BadgeGallery";
 import { AdsSidebar } from "@/components/AdsSidebar";
+import { Footer } from "@/components/Footer";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -70,6 +71,7 @@ const Index = () => {
           </aside>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

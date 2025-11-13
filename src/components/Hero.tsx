@@ -41,7 +41,7 @@ export const Hero = ({ user }: HeroProps) => {
         Transformă grija față de mediu într-o experiență plăcută și realistă. 
         Fiecare pas contează pentru un viitor mai sustenabil. 🌍
       </p>
-      <div className="flex gap-4 justify-center">
+      <div className="flex gap-4 justify-center flex-wrap">
         <Button 
           size="lg" 
           className="bg-gradient-primary hover:opacity-90 shadow-strong transition-all"
@@ -49,6 +49,17 @@ export const Hero = ({ user }: HeroProps) => {
         >
           <Gift className="mr-2 h-5 w-5" />
           Vezi Premiile
+        </Button>
+        <Button 
+          size="lg" 
+          variant="outline"
+          className="shadow-medium hover:shadow-strong transition-all"
+          onClick={() => {
+            const contactSection = document.getElementById('contact');
+            contactSection?.scrollIntoView({ behavior: 'smooth' });
+          }}
+        >
+          📧 Contactează-ne
         </Button>
       </div>
     </div>
