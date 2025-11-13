@@ -9,6 +9,8 @@ import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Rewards from "./pages/Rewards";
 import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import CreatePost from "./pages/CreatePost";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +25,8 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/rewards" element={<Rewards />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/create" element={<CreatePost />} />
+          <Route path="/blog/:id" element={<BlogPost />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
