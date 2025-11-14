@@ -11,6 +11,8 @@ import Rewards from "./pages/Rewards";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import CreatePost from "./pages/CreatePost";
+import Jobs from "./pages/Jobs";
+import CreateJob from "./pages/CreateJob";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +29,8 @@ const App = () => (
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/create" element={<CreatePost />} />
           <Route path="/blog/:id" element={<BlogPost />} />
+          <Route path="/jobs" element={<Jobs />} />
+          <Route path="/jobs/create" element={<CreateJob />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

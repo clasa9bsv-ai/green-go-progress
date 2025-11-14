@@ -43,14 +43,18 @@ serve(async (req) => {
         throw new Error('Verification data not found');
       }
 
-      const correctAnswer = verification.verification_answer?.toLowerCase() || '';
-      const userAnswer = textAnswer.toLowerCase();
-      const verified = userAnswer.includes(correctAnswer);
+      const correctAnswers = verification.verification_answer?.toLowerCase().split(',').map((a: string) => a.trim()) || [];
+      const userAnswer = textAnswer.toLowerCase().trim();
+      
+      const verified = correctAnswers.some((answer: string) => userAnswer.includes(answer));
 
       console.log('Text verification result:', verified);
 
       return new Response(
-        JSON.stringify({ verified, message: verified ? 'Răspuns corect!' : 'Răspuns incorect' }),
+        JSON.stringify({ 
+          verified, 
+          message: verified ? 'Răspuns corect!' : `Răspuns incorect. Cuvinte cheie acceptate: ${correctAnswers.join(', ')}` 
+        }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }

@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Recycle, Lightbulb, Users, Heart } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Category {
   id: string;
@@ -10,48 +12,100 @@ interface Category {
   completedChallenges: number;
   totalChallenges: number;
   color: string;
+  dbCategory: string;
 }
 
-const categories: Category[] = [
+const categoryMapping: Category[] = [
   {
     id: "recycle",
     name: "Reciclare",
     icon: <Recycle className="w-6 h-6" />,
     description: "Reduce, refolosește, reciclează",
-    completedChallenges: 5,
-    totalChallenges: 10,
-    color: "bg-primary/10 text-primary"
+    completedChallenges: 0,
+    totalChallenges: 0,
+    color: "bg-primary/10 text-primary",
+    dbCategory: "reciclare"
   },
   {
     id: "energy",
     name: "Energie",
     icon: <Lightbulb className="w-6 h-6" />,
     description: "Economisește energie și resurse",
-    completedChallenges: 3,
-    totalChallenges: 8,
-    color: "bg-accent/10 text-accent"
+    completedChallenges: 0,
+    totalChallenges: 0,
+    color: "bg-accent/10 text-accent",
+    dbCategory: "energie"
   },
   {
     id: "community",
     name: "Comunitate",
     icon: <Users className="w-6 h-6" />,
     description: "Implică-te în acțiuni locale",
-    completedChallenges: 2,
-    totalChallenges: 6,
-    color: "bg-blue-500/10 text-blue-600"
+    completedChallenges: 0,
+    totalChallenges: 0,
+    color: "bg-blue-500/10 text-blue-600",
+    dbCategory: "comunitate"
   },
   {
     id: "wellness",
     name: "Echilibru Personal",
     icon: <Heart className="w-6 h-6" />,
     description: "Grija de tine și de natură",
-    completedChallenges: 2,
-    totalChallenges: 7,
-    color: "bg-pink-500/10 text-pink-600"
+    completedChallenges: 0,
+    totalChallenges: 0,
+    color: "bg-pink-500/10 text-pink-600",
+    dbCategory: "wellness"
   }
 ];
 
 export const CategoryCards = () => {
+  const [categories, setCategories] = useState<Category[]>(categoryMapping);
+
+  useEffect(() => {
+    fetchCategoryProgress();
+  }, []);
+
+  const fetchCategoryProgress = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: allChallenges } = await supabase
+        .from('challenges')
+        .select('id, category');
+
+      const { data: completions } = await supabase
+        .from('completions')
+        .select('challenge_id, verified')
+        .eq('user_id', user.id)
+        .eq('verified', true);
+
+      if (!allChallenges) return;
+
+      const completedChallengeIds = new Set(completions?.map(c => c.challenge_id) || []);
+
+      const updatedCategories = categoryMapping.map(category => {
+        const categoryLower = category.dbCategory.toLowerCase();
+        const totalInCategory = allChallenges.filter(
+          c => c.category.toLowerCase() === categoryLower
+        ).length;
+        const completedInCategory = allChallenges.filter(
+          c => c.category.toLowerCase() === categoryLower && completedChallengeIds.has(c.id)
+        ).length;
+
+        return {
+          ...category,
+          totalChallenges: totalInCategory,
+          completedChallenges: completedInCategory
+        };
+      });
+
+      setCategories(updatedCategories);
+    } catch (error) {
+      console.error('Error fetching category progress:', error);
+    }
+  };
+
   return (
     <section className="mb-12">
       <h2 className="text-2xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
@@ -84,7 +138,7 @@ export const CategoryCards = () => {
                 <div 
                   className="h-full bg-gradient-primary transition-all duration-700 group-hover:shadow-glow relative overflow-hidden"
                   style={{ 
-                    width: `${(category.completedChallenges / category.totalChallenges) * 100}%` 
+                    width: `${category.totalChallenges > 0 ? (category.completedChallenges / category.totalChallenges) * 100 : 0}%` 
                   }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
