@@ -7,6 +7,7 @@ import { StatsDisplay } from "@/components/StatsDisplay";
 import { CategoryCards } from "@/components/CategoryCards";
 import { BadgeGallery } from "@/components/BadgeGallery";
 import { AdsSidebar } from "@/components/AdsSidebar";
+import { PromotedJobs } from "@/components/PromotedJobs";
 import { Footer } from "@/components/Footer";
 
 const Index = () => {
@@ -59,6 +60,7 @@ const Index = () => {
           {/* Main Content */}
           <main className="lg:col-span-6 space-y-12">
             <Hero user={user} />
+            <PromotedJobs />
             <DailyChallenge />
             <StatsDisplay />
             <CategoryCards />

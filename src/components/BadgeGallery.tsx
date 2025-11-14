@@ -60,7 +60,7 @@ export const BadgeGallery = () => {
       <h2 className="text-2xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
         Insignele Tale
       </h2>
-      <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         {badges.map((badge, index) => (
           <Card 
             key={badge.id}
@@ -75,8 +75,8 @@ export const BadgeGallery = () => {
               <div className={`text-3xl mb-2 transition-transform duration-300 ${badge.earned ? 'group-hover:scale-125 group-hover:animate-float' : ''}`}>
                 {badge.emoji}
               </div>
-              <h3 className="font-bold text-xs mb-1 line-clamp-1">{badge.name}</h3>
-              <p className="text-[10px] text-muted-foreground leading-tight line-clamp-2 mb-2">{badge.description}</p>
+              <h3 className="font-bold text-xs mb-1 line-clamp-2">{badge.name}</h3>
+              <p className="text-[10px] text-muted-foreground leading-tight line-clamp-3 mb-2">{badge.description}</p>
               {badge.earned && (
                 <Badge className="mt-1 text-[9px] py-0 px-1.5 bg-gradient-primary text-primary-foreground shadow-sm" variant="secondary">
                   ✓ Câștigat
