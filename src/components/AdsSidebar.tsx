@@ -1,6 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Lightbulb, Recycle, Droplet, Wind, Leaf, Battery } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Ad {
   id: string;
@@ -67,6 +69,7 @@ interface AdsSidebarProps {
 }
 
 export const AdsSidebar = ({ position }: AdsSidebarProps) => {
+  const navigate = useNavigate();
   const displayAds = position === "left" ? ads.slice(0, 3) : ads.slice(3, 6);
 
   return (
@@ -109,10 +112,14 @@ export const AdsSidebar = ({ position }: AdsSidebarProps) => {
       })}
       
       <div className="text-center pt-2">
-        <p className="text-xs text-muted-foreground">
-          Vrei să promovezi servicii eco? <br />
-          <span className="text-primary cursor-pointer hover:underline">Contactează-ne</span>
-        </p>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate("/jobs")}
+          className="text-xs text-primary hover:text-primary/80"
+        >
+          Alte anunțuri disponibile aici
+        </Button>
       </div>
     </div>
   );

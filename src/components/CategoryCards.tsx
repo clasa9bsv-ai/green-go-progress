@@ -123,7 +123,7 @@ export const CategoryCards = () => {
                 {category.icon}
               </div>
               <CardTitle className="text-base group-hover:text-primary transition-colors">{category.name}</CardTitle>
-              <CardDescription className="text-sm line-clamp-2">{category.description}</CardDescription>
+              <CardDescription className="text-sm">{category.description}</CardDescription>
             </CardHeader>
             <CardContent className="p-4 pt-0">
               <div className="flex items-center justify-between mb-2">
