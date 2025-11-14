@@ -34,7 +34,7 @@ const CreateJob = () => {
         return;
       }
 
-      const { error } = await supabase.from("job_announcements").insert([
+      const { error } = await (supabase as any).from("job_announcements").insert([
         {
           ...formData,
           user_id: user.id,

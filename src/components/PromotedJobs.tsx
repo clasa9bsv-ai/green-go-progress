@@ -26,7 +26,7 @@ export const PromotedJobs = () => {
   }, []);
 
   const fetchPromotedJobs = async () => {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('job_announcements')
       .select('*')
       .eq('is_promoted', true)
