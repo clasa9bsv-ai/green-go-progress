@@ -44,14 +44,14 @@ export const PromotedJobs = () => {
     <section className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-          Anunțuri Promovate
+          Promoted Announcements
         </h2>
         <Button 
           variant="outline" 
           onClick={() => navigate("/jobs")}
           className="shadow-medium"
         >
-          Vezi Toate
+          View All
         </Button>
       </div>
       <div className="grid gap-4 md:grid-cols-3">
@@ -65,7 +65,7 @@ export const PromotedJobs = () => {
               <div className="flex items-start justify-between gap-2">
                 <Briefcase className="h-8 w-8 text-primary flex-shrink-0" />
                 <Badge variant="secondary" className="bg-gradient-primary text-primary-foreground">
-                  Promovat
+                  Promoted
                 </Badge>
               </div>
               <CardTitle className="text-lg line-clamp-2">{job.title}</CardTitle>

@@ -49,7 +49,7 @@ const JobDetail = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5 flex items-center justify-center">
-        <div className="animate-pulse text-xl text-muted-foreground">Se încarcă...</div>
+        <div className="animate-pulse text-xl text-muted-foreground">Loading...</div>
       </div>
     );
   }
@@ -58,8 +58,8 @@ const JobDetail = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-muted-foreground mb-4">Anunț negăsit</p>
-          <Button onClick={() => navigate("/jobs")}>Înapoi la anunțuri</Button>
+          <p className="text-muted-foreground mb-4">Announcement not found</p>
+          <Button onClick={() => navigate("/jobs")}>Back to announcements</Button>
         </div>
       </div>
     );
@@ -74,7 +74,7 @@ const JobDetail = () => {
           className="mb-6 gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          Înapoi la Anunțuri
+          Back to Announcements
         </Button>
 
         <Card className={`shadow-strong ${job.is_promoted ? 'border-2 border-primary/30' : ''}`}>
@@ -90,7 +90,7 @@ const JobDetail = () => {
                     <Badge variant="outline">{job.category}</Badge>
                     {job.is_promoted && (
                       <Badge variant="secondary" className="bg-gradient-primary text-primary-foreground">
-                        Promovat
+                        Promoted
                       </Badge>
                     )}
                   </div>
@@ -104,21 +104,21 @@ const JobDetail = () => {
               <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
                 <MapPin className="h-5 w-5 text-primary" />
                 <div>
-                  <p className="text-sm text-muted-foreground">Locație</p>
+                  <p className="text-sm text-muted-foreground">Location</p>
                   <p className="font-semibold">{job.location}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
                 <Euro className="h-5 w-5 text-primary" />
                 <div>
-                  <p className="text-sm text-muted-foreground">Preț</p>
+                  <p className="text-sm text-muted-foreground">Price</p>
                   <p className="font-semibold text-primary">{job.price}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
                 <Calendar className="h-5 w-5 text-primary" />
                 <div>
-                  <p className="text-sm text-muted-foreground">Publicat</p>
+                  <p className="text-sm text-muted-foreground">Published</p>
                   <p className="font-semibold">
                     {format(new Date(job.created_at), "dd MMMM yyyy", { locale: ro })}
                   </p>
@@ -127,7 +127,7 @@ const JobDetail = () => {
               <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
                 <User className="h-5 w-5 text-primary" />
                 <div>
-                  <p className="text-sm text-muted-foreground">Categorie</p>
+                  <p className="text-sm text-muted-foreground">Category</p>
                   <p className="font-semibold">{job.category}</p>
                 </div>
               </div>
@@ -135,7 +135,7 @@ const JobDetail = () => {
 
             <div className="pt-4 border-t">
               <Button className="w-full bg-gradient-primary" size="lg">
-                Contactează angajatorul
+                Contact Employer
               </Button>
             </div>
           </CardContent>

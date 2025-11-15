@@ -16,51 +16,51 @@ interface Ad {
 const ads: Ad[] = [
   {
     id: "1",
-    title: "Schimb Becuri LED",
-    description: "Înlocuiesc becurile vechi cu LED-uri economice. Reducere 30% consum energie!",
+    title: "LED Bulb Replacement",
+    description: "Replace old bulbs with economical LEDs. 30% energy consumption reduction!",
     provider: "EcoLight Services",
     icon: Lightbulb,
-    category: "Energie"
+    category: "Energy"
   },
   {
     id: "2",
-    title: "Colectare Deșeuri",
-    description: "Servicii de reciclare și colectare selectivă la domiciliu. Program flexibil!",
+    title: "Waste Collection",
+    description: "Recycling and selective collection services at home. Flexible schedule!",
     provider: "GreenRecycle",
     icon: Recycle,
-    category: "Reciclare"
+    category: "Recycling"
   },
   {
     id: "3",
-    title: "Economizoare Apă",
-    description: "Instalez sisteme de economisire apă. Reduce consumul cu până la 50%!",
+    title: "Water Savers",
+    description: "Install water-saving systems. Reduce consumption by up to 50%!",
     provider: "AquaSave",
     icon: Droplet,
-    category: "Apă"
+    category: "Water"
   },
   {
     id: "4",
-    title: "Panouri Solare",
-    description: "Consultanță gratuită pentru instalare panouri solare. Energie verde!",
+    title: "Solar Panels",
+    description: "Free consultation for solar panel installation. Green energy!",
     provider: "SolarPro",
     icon: Wind,
-    category: "Energie"
+    category: "Energy"
   },
   {
     id: "5",
-    title: "Compost Organic",
-    description: "Vând compost 100% organic pentru grădina ta. Produse locale!",
+    title: "Organic Compost",
+    description: "Selling 100% organic compost for your garden. Local products!",
     provider: "BioGarden",
     icon: Leaf,
-    category: "Grădinărit"
+    category: "Gardening"
   },
   {
     id: "6",
-    title: "Reciclare Baterii",
-    description: "Colectez baterii uzate gratuit. Protejăm mediul împreună!",
+    title: "Battery Recycling",
+    description: "Collect used batteries for free. Protecting the environment together!",
     provider: "BatteryGreen",
     icon: Battery,
-    category: "Reciclare"
+    category: "Recycling"
   }
 ];
 
@@ -75,8 +75,8 @@ export const AdsSidebar = ({ position }: AdsSidebarProps) => {
   return (
     <div className="space-y-4 sticky top-8">
       <div className="text-center mb-6">
-        <h3 className="text-lg font-semibold text-foreground mb-1">Servicii Eco</h3>
-        <p className="text-sm text-muted-foreground">Promovează sustenabilitatea</p>
+        <h3 className="text-lg font-semibold text-foreground mb-1">Eco Services</h3>
+        <p className="text-sm text-muted-foreground">Promote sustainability</p>
       </div>
       
       {displayAds.map((ad) => {
@@ -118,7 +118,7 @@ export const AdsSidebar = ({ position }: AdsSidebarProps) => {
           onClick={() => navigate("/jobs")}
           className="text-xs text-primary hover:text-primary/80"
         >
-          Alte anunțuri disponibile aici
+          Other announcements available here
         </Button>
       </div>
     </div>

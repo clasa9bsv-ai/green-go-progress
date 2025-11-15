@@ -16,7 +16,7 @@ interface BlogPost {
   comments_count: number;
   created_at: string;
 }
-const categories = ["Toate", "Reciclare", "Energie", "Comunitate", "Echilibru Personal"];
+const categories = ["All", "Recycling", "Energy", "Community", "Personal Balance"];
 const Blog = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("Toate");
@@ -37,13 +37,13 @@ const Blog = () => {
   const filteredPosts = selectedCategory === "Toate" ? posts : posts.filter(post => post.category === selectedCategory);
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case "Reciclare":
+      case "Recycling":
         return "bg-primary/10 text-primary";
-      case "Energie":
+      case "Energy":
         return "bg-accent/10 text-accent";
-      case "Comunitate":
+      case "Community":
         return "bg-blue-500/10 text-blue-600";
-      case "Echilibru Personal":
+      case "Personal Balance":
         return "bg-pink-500/10 text-pink-600";
       default:
         return "bg-secondary text-secondary-foreground";
@@ -54,19 +54,19 @@ const Blog = () => {
         <div className="mb-8">
           <Button variant="ghost" onClick={() => navigate("/")} className="mb-4">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Înapoi
+            Back
           </Button>
           
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-4 mx-0 my-0 px-0 py-[10px]">
-            Blog & Comunitate
+            Blog & Community
           </h1>
           <p className="text-lg text-muted-foreground max-w-3xl">
-            Împărtășește experiențele tale eco-friendly, învață din experiențele altora 
-            și găsește soluții la provocările tale de sustenabilitate. 🌱
+            Share your eco-friendly experiences, learn from others, 
+            and find solutions to your sustainability challenges. 🌱
           </p>
         </div>
 
-        <Tabs defaultValue="Toate" className="mb-8">
+        <Tabs defaultValue="All" className="mb-8">
           <TabsList className="grid grid-cols-2 md:grid-cols-5 w-full mb-8">
             {categories.map(category => <TabsTrigger key={category} value={category} onClick={() => setSelectedCategory(category)}>
                 {category}
@@ -75,7 +75,7 @@ const Blog = () => {
         </Tabs>
 
         {loading ? <div className="text-center py-12">
-            <div className="animate-pulse text-xl text-muted-foreground">Se încarcă...</div>
+            <div className="animate-pulse text-xl text-muted-foreground">Loading...</div>
           </div> : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPosts.map((post, index) => <Card key={post.id} onClick={() => navigate(`/blog/${post.id}`)} className="shadow-medium hover:shadow-strong transition-all cursor-pointer hover:scale-105 duration-300 animate-in fade-in slide-in-from-bottom-4" style={{
           animationDelay: `${index * 80}ms`,
@@ -110,21 +110,21 @@ const Blog = () => {
               </Card>)}
             {filteredPosts.length === 0 && <div className="col-span-full text-center py-12">
                 <p className="text-muted-foreground text-lg">
-                  Nu există încă articole în această categorie. Fii primul care scrie! ✍️
+                  No articles in this category yet. Be the first to write! ✍️
                 </p>
               </div>}
           </div>}
 
         <Card className="mt-12 bg-gradient-primary text-primary-foreground shadow-strong">
           <CardHeader>
-            <CardTitle className="text-2xl text-center">Ai o poveste de împărtășit?</CardTitle>
+            <CardTitle className="text-2xl text-center">Have a story to share?</CardTitle>
             <CardDescription className="text-center text-primary-foreground/80">
-              Ajută comunitatea să crească împărtășind experiențele tale eco-friendly!
+              Help the community grow by sharing your eco-friendly experiences!
             </CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center">
             <Button size="lg" variant="secondary" className="shadow-medium hover:shadow-strong transition-all" onClick={() => navigate("/blog/create")}>
-              Scrie un articol
+              Write an article
             </Button>
           </CardContent>
         </Card>

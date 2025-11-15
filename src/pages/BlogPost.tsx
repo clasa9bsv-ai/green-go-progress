@@ -137,10 +137,10 @@ const BlogPost = () => {
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case "Reciclare": return "bg-primary/10 text-primary";
-      case "Energie": return "bg-accent/10 text-accent";
-      case "Comunitate": return "bg-blue-500/10 text-blue-600";
-      case "Echilibru Personal": return "bg-pink-500/10 text-pink-600";
+      case "Recycling": return "bg-primary/10 text-primary";
+      case "Energy": return "bg-accent/10 text-accent";
+      case "Community": return "bg-blue-500/10 text-blue-600";
+      case "Personal Balance": return "bg-pink-500/10 text-pink-600";
       default: return "bg-secondary text-secondary-foreground";
     }
   };

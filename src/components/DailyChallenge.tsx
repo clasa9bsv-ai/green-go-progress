@@ -58,10 +58,10 @@ export const DailyChallenge = () => {
       // The edge function will handle all verification logic
       // For now, we always show both tabs and let users choose
       setHasVerificationQuestion(true);
-      setVerificationQuestion("Răspunde la întrebarea de verificare pentru această provocare");
+      setVerificationQuestion("Answer the verification question for this challenge");
     } catch (error) {
       console.error('Error fetching challenge:', error);
-      toast.error("Eroare la încărcarea provocării zilei");
+      toast.error("Error loading daily challenge");
     }
   };
 
@@ -97,7 +97,7 @@ export const DailyChallenge = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast.error("Trebuie să fii autentificat");
+        toast.error("You must be authenticated");
         return;
       }
 
