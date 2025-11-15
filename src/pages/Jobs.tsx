@@ -20,7 +20,7 @@ interface JobAnnouncement {
   created_at: string;
 }
 
-const categories = ["Toate", "Construcții", "Grădinărit", "Curățenie", "Instalații", "Pictură", "Altele"];
+const categories = ["All", "Construction", "Gardening", "Cleaning", "Installations", "Painting", "Other"];
 
 const Jobs = () => {
   const [jobs, setJobs] = useState<JobAnnouncement[]>([]);
@@ -60,19 +60,19 @@ const Jobs = () => {
             className="gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            Înapoi
+            Back
           </Button>
           <Button
             onClick={() => navigate("/jobs/create")}
             className="gap-2 bg-gradient-primary"
           >
             <Plus className="h-4 w-4" />
-            Creează Anunț
+            Create Announcement
           </Button>
         </div>
 
         <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-primary bg-clip-text text-transparent">
-          Anunțuri de Muncă
+          Job Announcements
         </h1>
 
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="mb-6">
@@ -87,7 +87,7 @@ const Jobs = () => {
 
         {loading ? (
           <div className="text-center py-12">
-            <div className="animate-pulse text-xl text-muted-foreground">Se încarcă...</div>
+            <div className="animate-pulse text-xl text-muted-foreground">Loading...</div>
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -104,7 +104,7 @@ const Jobs = () => {
                     <Briefcase className="h-8 w-8 text-primary flex-shrink-0" />
                     {job.is_promoted && (
                       <Badge variant="secondary" className="bg-gradient-primary text-primary-foreground">
-                        Promovat
+                        Promoted
                       </Badge>
                     )}
                   </div>
@@ -134,7 +134,7 @@ const Jobs = () => {
 
         {!loading && filteredJobs.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">Nu există anunțuri în această categorie.</p>
+            <p className="text-muted-foreground">No announcements in this category.</p>
           </div>
         )}
       </div>

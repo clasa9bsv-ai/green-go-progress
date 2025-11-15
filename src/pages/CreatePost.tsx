@@ -17,7 +17,7 @@ const CreatePost = () => {
   const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const categories = ["Reciclare", "Energie", "Comunitate", "Echilibru Personal"];
+  const categories = ["Recycling", "Energy", "Community", "Personal Balance"];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

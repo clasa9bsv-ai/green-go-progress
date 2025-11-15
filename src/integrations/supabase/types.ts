@@ -221,6 +221,45 @@ export type Database = {
           },
         ]
       }
+      job_announcements: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          id: string
+          is_promoted: boolean
+          location: string
+          price: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description: string
+          id?: string
+          is_promoted?: boolean
+          location: string
+          price: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_promoted?: boolean
+          location?: string
+          price?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           completed_challenges: number | null

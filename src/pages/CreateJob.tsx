@@ -10,7 +10,7 @@ import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const categories = ["Construcții", "Grădinărit", "Curățenie", "Instalații", "Pictură", "Altele"];
+const categories = ["Construction", "Gardening", "Cleaning", "Installations", "Painting", "Other"];
 
 const CreateJob = () => {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const CreateJob = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast.error("Trebuie să fii autentificat");
+        toast.error("You must be authenticated");
         return;
       }
 
@@ -43,11 +43,11 @@ const CreateJob = () => {
 
       if (error) throw error;
 
-      toast.success("Anunț creat cu succes!");
+      toast.success("Announcement created successfully!");
       navigate("/jobs");
     } catch (error) {
       console.error("Error creating job:", error);
-      toast.error("Eroare la crearea anunțului");
+      toast.error("Error creating announcement");
     } finally {
       setLoading(false);
     }
@@ -62,49 +62,49 @@ const CreateJob = () => {
           className="mb-6 gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          Înapoi
+          Back
         </Button>
 
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl bg-gradient-primary bg-clip-text text-transparent">
-              Creează Anunț de Muncă
+              Create Job Announcement
             </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="title">Titlu</Label>
+                <Label htmlFor="title">Title</Label>
                 <Input
                   id="title"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="Ex: Ajutor grădinărit în Brașov"
+                  placeholder="Ex: Gardening help in Brașov"
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="description">Descriere</Label>
+                <Label htmlFor="description">Description</Label>
                 <Textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Descrie munca necesară..."
+                  placeholder="Describe the work needed..."
                   rows={4}
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="category">Categorie</Label>
+                <Label htmlFor="category">Category</Label>
                 <Select
                   value={formData.category}
                   onValueChange={(value) => setFormData({ ...formData, category: value })}
                   required
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Selectează categoria" />
+                    <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
                     {categories.map((category) => (
@@ -117,23 +117,23 @@ const CreateJob = () => {
               </div>
 
               <div>
-                <Label htmlFor="price">Preț</Label>
+                <Label htmlFor="price">Price</Label>
                 <Input
                   id="price"
                   value={formData.price}
                   onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  placeholder="Ex: 50 RON/oră sau 500 RON total"
+                  placeholder="Ex: 50 RON/hour or 500 RON total"
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="location">Locație</Label>
+                <Label htmlFor="location">Location</Label>
                 <Input
                   id="location"
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  placeholder="Ex: Brașov, România"
+                  placeholder="Ex: Brașov, Romania"
                   required
                 />
               </div>
@@ -143,7 +143,7 @@ const CreateJob = () => {
                 className="w-full bg-gradient-primary"
                 disabled={loading}
               >
-                {loading ? "Se creează..." : "Publică Anunț"}
+                {loading ? "Creating..." : "Publish Announcement"}
               </Button>
             </form>
           </CardContent>
